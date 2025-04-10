@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Assistant</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
+    <!-- Link to your CSS file -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <!-- Favicon Link -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='apple-touch-icon.png') }}">
+
+</head>
+<body>
+    <!-- Main Application Structure -->
+    <div class="app-container animated-app">
+        <header class="app-header">
+            <div class="header-left">
+                <div class="logo-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="app-logo">
+                         <defs><linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:var(--logo-primary); stop-opacity:1" /><stop offset="100%" style="stop-color:var(--logo-secondary); stop-opacity:1" /></linearGradient></defs>
+                        <path fill="#333333" d="M15,10 h70 a5,5 0 0 1 5,5 v70 a5,5 0 0 1 -5,5 h-70 a5,5 0 0 1 -5,-5 v-70 a5,5 0 0 1 5,-5 z"/><rect fill="#555555" x="15" y="10" width="70" height="8" rx="2" ry="2"/><path fill="url(#logoGradient)" d="M30,55 l15,15 l30,-30 l-8,0 l-22,22 l-7,-7 z" transform="translate(0, 5)"/>
+                    </svg>
+                </div>
+                 <h1>Calendar Assistant</h1>
+            </div>
+            <div id="auth-status">
+                {% if user_info %}
+                    <span title="{{ user_info.get('email', 'N/A') }}"><i class="fas fa-user-circle user-avatar-icon"></i> | <a href="{{ url_for('logout') }}" class="logout-link">Logout</a></span>
+                {% else %}
+                    <a href="{{ url_for('authorize') }}" class="button google-button"><i class="fab fa-google"></i> Connect Google</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <main id="chatbox">
+            <div id="messages">
+                <!-- Initial Placeholder - Shown when chat is empty -->
+                <div id="initial-placeholder">
+                    <div class="placeholder-logo-container">
+                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" class="placeholder-logo">
+                         <defs><linearGradient id="logoGradientPlaceholder" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:var(--logo-primary); stop-opacity:1" /><stop offset="100%" style="stop-color:var(--logo-secondary); stop-opacity:1" /></linearGradient></defs>
+                        <path fill="#333333" d="M15,10 h70 a5,5 0 0 1 5,5 v70 a5,5 0 0 1 -5,5 h-70 a5,5 0 0 1 -5,-5 v-70 a5,5 0 0 1 5,-5 z"/><rect fill="#555555" x="15" y="10" width="70" height="8" rx="2" ry="2"/><path fill="url(#logoGradientPlaceholder)" d="M30,55 l15,15 l30,-30 l-8,0 l-22,22 l-7,-7 z" transform="translate(0, 5)"/>
+                       </svg>
+                    </div>
+                    <h2>Calendar Assistant</h2>
+                    <p class="creators">
+                        By Mohammad Aatif Khan, Amar Sahani, & Ritik Kumar
+                    </p>
+                    <div class="example-prompts">
+                        <p>Examples:</p>
+                        <button class="prompt-button">"What's on my schedule today?"</button>
+                        <button class="prompt-button">"Am I free tomorrow at 2 PM?"</button>
+                        <button class="prompt-button">"Schedule 'Team Meeting' next Tuesday at 10 AM"</button>
+                    </div>
+                    <p class="greeting">How can I help you today?</p>
+                </div>
+                <!-- END Initial Placeholder -->
+
+                <!-- Chat messages will appear here -->
+                <!-- Typing indicator placeholder -->
+                 <div class="message bot-message typing-indicator" style="display: none;">
+                    <div class="message-icon bot-icon-container"><i class="fas fa-robot"></i></div>
+                    <div class="message-content"><span class="dots"><span>.</span><span>.</span><span>.</span></span></div>
+                </div>
+            </div>
+        </main>
+
+        <footer id="input-area">
+            <div class="input-wrapper">
+                <textarea id="userInput" placeholder="Ask about your schedule..." rows="1"></textarea>
+                <button id="sendButton" title="Send Message" disabled><i class="fas fa-paper-plane"></i></button>
+            </div>
+            <div class="footer-notice">
+                 Calendar Assistant | Access based on Google Calendar permissions.
+            </div>
+        </footer>
+    </div> <!-- End app-container -->
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

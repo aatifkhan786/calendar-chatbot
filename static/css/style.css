@@ -1,0 +1,334 @@
+/* static/css/style.css - ChatGPT Inspired Dark Theme */
+:root {
+    /* Core Colors - Refined Dark Palette */
+    --primary-color: #57a9f0; /* Slightly softer blue */
+    --primary-darker: #3a88d7;
+    --secondary-color: #8e8e9f; /* Muted gray for secondary text/icons */
+    --accent-color: #f0ad4e; /* Optional Accent */
+
+    /* Backgrounds - ChatGPT Dark Style */
+    --bg-main: #202123; /* Very Dark Gray - Base */
+    --bg-chat: #343541; /* Slightly Lighter Gray - Chat Area */
+    --bg-header: #202123; /* Match Base */
+    --bg-input-wrapper: #40414f; /* Input wrapper background */
+    --bg-input: transparent; /* Input field transparent */
+    --bg-bot-message: #444654; /* Bot message background */
+    --bg-user-message: #2e4a61; /* Muted Blue/Teal for User */
+    --bg-placeholder: var(--bg-chat); /* Placeholder bg same as chat */
+    --bg-prompt-button: rgba(255, 255, 255, 0.08);
+    --bg-prompt-button-hover: rgba(255, 255, 255, 0.12);
+
+
+    /* Text Colors */
+    --text-primary: #ececf1; /* Near white */
+    --text-secondary: #c5c5d2; /* Lighter gray */
+    --text-placeholder-element: #9ca3af; /* Muted text for placeholder elements */
+    --text-placeholder: #7e7e8f;
+    --text-footer-notice: #aab0bd; /* Dim text for footer notice */
+    --text-dark-on-light: #202123; /* For light buttons */
+
+    /* Message Bubbles & Icons */
+    --user-msg-text: var(--text-primary);
+    --bot-msg-text: var(--text-primary);
+    --icon-color: #acacbe; /* Default icon color */
+    --icon-bg: rgba(255, 255, 255, 0.1); /* Subtle background for icons */
+
+    /* Borders & Shadows */
+    --border-color: #4d4d5a; /* Subtle border */
+    --border-prompt-button: rgba(255, 255, 255, 0.2);
+    --shadow-color-light: rgba(0, 0, 0, 0.1);
+    --shadow-color-medium: rgba(0, 0, 0, 0.3);
+    --focus-ring-color: rgba(87, 169, 240, 0.5); /* Blue focus ring */
+
+    /* Logo Colors */
+    --logo-primary: var(--primary-color);
+    --logo-secondary: #7cbbf7;
+
+    /* Layout */
+    --header-height: 60px;
+    --input-area-padding: 20px;
+    --footer-notice-height: 30px;
+
+    /* Fonts */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    --font-secondary: var(--font-primary);
+}
+
+/* ... (Keep *, html, body, .app-container, @keyframes fadeInApp, .app-header and children styles from previous version) ... */
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    font-family: var(--font-primary);
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    font-size: 16px;
+}
+
+.app-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+    background-color: var(--bg-chat);
+    opacity: 0;
+    animation: fadeInApp 0.5s 0.1s ease-out forwards;
+}
+
+@keyframes fadeInApp {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.app-header {
+    height: var(--header-height);
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 15px;
+    background-color: var(--bg-header);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 10;
+}
+
+.header-left { display: flex; align-items: center; }
+.logo-container { width: 32px; height: 32px; margin-right: 10px; }
+.app-logo { display: block; width: 100%; height: 100%; }
+h1 { color: var(--text-primary); margin: 0; font-weight: 500; font-size: 1.1em; }
+
+#auth-status {
+    text-align: right;
+    font-size: 0.85em;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+}
+#auth-status span { display: flex; align-items: center; white-space: nowrap; }
+#auth-status .user-avatar-icon { color: var(--icon-color); margin-right: 8px; font-size: 1.4em; }
+#auth-status a { color: var(--text-secondary); text-decoration: none; font-weight: 400; transition: color 0.2s ease; margin-left: 8px; }
+#auth-status a:hover { color: var(--text-primary); }
+#auth-status a.google-button { background-color: #ffffff; color: var(--text-dark-on-light); padding: 6px 12px; border-radius: 6px; font-size: 0.85em; font-weight: 500; border: none; transition: background-color 0.3s ease; margin-left: 0; display: inline-flex; align-items: center; }
+#auth-status a.google-button i { color: #4285F4; margin-right: 6px; font-size: 1.1em; }
+#auth-status a.google-button:hover { background-color: #f1f1f1; }
+
+
+/* --- Chatbox (Main Area) --- */
+#chatbox {
+    flex-grow: 1;
+    overflow: hidden; /* Important for placeholder positioning */
+    display: flex;
+    flex-direction: column;
+    background-color: var(--bg-chat);
+    position: relative; /* Needed for absolute positioning of placeholder? Maybe not. */
+}
+
+#messages {
+    flex-grow: 1;
+    padding: 0; /* Remove padding, handled by message/placeholder */
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--secondary-color) transparent;
+}
+#messages::-webkit-scrollbar { width: 8px; }
+#messages::-webkit-scrollbar-track { background: transparent; }
+#messages::-webkit-scrollbar-thumb { background-color: #555; border-radius: 4px; }
+#messages::-webkit-scrollbar-thumb:hover { background-color: var(--secondary-color); }
+
+/* --- Initial Placeholder Styling --- */
+#initial-placeholder {
+    display: flex; /* Hidden by default via JS initially */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%; /* Take full height of the messages container */
+    padding: 30px;
+    color: var(--text-secondary);
+    background-color: var(--bg-placeholder); /* Match chat bg */
+}
+
+.placeholder-logo-container {
+    width: 50px; /* Larger logo for placeholder */
+    height: 50px;
+    margin-bottom: 15px;
+}
+.placeholder-logo { display: block; width: 100%; height: 100%; }
+
+#initial-placeholder h2 {
+    color: var(--text-primary);
+    font-size: 1.5em;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+#initial-placeholder .creators {
+    font-size: 0.9em;
+    color: var(--text-placeholder-element);
+    margin-bottom: 30px;
+}
+
+.example-prompts {
+    margin-bottom: 20px;
+    max-width: 500px; /* Limit width of examples */
+}
+.example-prompts p {
+    font-size: 0.95em;
+    margin-bottom: 10px;
+    color: var(--text-primary);
+}
+
+.prompt-button {
+    display: inline-block;
+    background-color: var(--bg-prompt-button);
+    color: var(--text-primary);
+    border: 1px solid var(--border-prompt-button);
+    border-radius: 8px;
+    padding: 8px 15px;
+    margin: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    text-align: left;
+}
+.prompt-button:hover {
+    background-color: var(--bg-prompt-button-hover);
+}
+
+#initial-placeholder .greeting {
+    font-size: 1em;
+    color: var(--text-secondary);
+}
+
+
+/* --- Message Styling (Keep from previous version) --- */
+.message {
+    display: flex;
+    align-items: flex-start;
+    padding: 15px 10%;
+    margin-bottom: 1px;
+    max-width: 100%;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: slideInUp 0.4s ease-out forwards;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.message:last-of-type { /* Use last-of-type to avoid border below typing indicator if shown */
+    border-bottom: none;
+ }
+.message:nth-child(n+2) { animation-delay: 0.05s; }
+
+/* Hide placeholder via JS initially, this is a fallback */
+/* #messages:not(:empty) #initial-placeholder {
+    display: none;
+} */
+
+@keyframes slideInUp {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.message-icon {
+    width: 30px; height: 30px; border-radius: 4px; display: flex;
+    justify-content: center; align-items: center; margin-right: 15px;
+    flex-shrink: 0; font-size: 1.1em; background-color: var(--icon-bg);
+    color: var(--icon-color);
+}
+.bot-icon-container { background-color: #19c37d; color: white; }
+.user-icon-container i { color: var(--icon-color); }
+
+.message-content { padding-top: 2px; word-wrap: break-word; overflow-wrap: break-word; line-height: 1.6; flex-grow: 1; }
+.message-content span { white-space: pre-wrap; }
+
+.bot-message { background-color: var(--bg-bot-message); }
+.user-message { background-color: var(--bg-chat); }
+
+.bot-message a { color: var(--primary-color); text-decoration: underline; }
+.bot-message a:hover { color: #7cbbf7; }
+
+.typing-indicator {
+    /* Ensure typing indicator doesn't have the bottom border */
+    border-bottom: none !important;
+}
+.typing-indicator .dots span { display: inline-block; width: 6px; height: 6px; background-color: var(--text-secondary); border-radius: 50%; margin: 0 2px; opacity: 0; animation: typingDots 1.2s infinite ease-in-out; }
+.typing-indicator .dots span:nth-child(1) { animation-delay: 0s; }
+.typing-indicator .dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator .dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingDots { 0%, 60%, 100% { opacity: 0.4; transform: scale(0.8); } 30% { opacity: 1; transform: scale(1); } }
+
+/* --- Input Area (Footer - Keep styles from previous version) --- */
+#input-area {
+    flex-shrink: 0;
+    padding: var(--input-area-padding);
+    padding-top: 15px;
+    background: linear-gradient(180deg, rgba(52, 53, 65, 0), var(--bg-chat) 58.85%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    width: 100%;
+    max-width: 768px;
+    margin: 0 auto;
+    background-color: var(--bg-input-wrapper);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 10px 15px;
+    padding-right: 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.input-wrapper:focus-within { border-color: var(--primary-color); box-shadow: 0 0 0 2px var(--focus-ring-color); }
+
+
+#userInput {
+    flex-grow: 1; border: none; background-color: var(--bg-input);
+    color: var(--text-primary); font-family: var(--font-primary); font-size: 1em;
+    resize: none; line-height: 1.6; max-height: 200px; overflow-y: auto;
+    outline: none; padding-right: 10px;
+}
+#userInput::placeholder { color: var(--text-placeholder); opacity: 1; }
+
+#sendButton {
+    position: absolute; right: 10px; bottom: 10px; width: 32px; height: 32px;
+    background-color: var(--primary-color); color: white; border: none;
+    border-radius: 6px; cursor: pointer; transition: background-color 0.2s ease;
+    display: flex; justify-content: center; align-items: center; font-size: 0.9em;
+}
+#sendButton:hover { background-color: var(--primary-darker); }
+#sendButton:disabled { background-color: #555; cursor: not-allowed; opacity: 0.7; }
+
+.footer-notice {
+    padding-top: 10px; text-align: center; font-size: 0.75em;
+    color: var(--text-footer-notice); height: var(--footer-notice-height);
+}
+
+/* --- Responsive Adjustments (Keep from previous version) --- */
+@media (max-width: 768px) {
+    :root { --header-height: 55px; }
+    .app-header { padding: 0 10px; }
+    h1 { display: none; }
+    .logo-container { width: 30px; height: 30px; margin-right: 0; }
+    #auth-status { font-size: 0.8em; }
+    #auth-status span { max-width: 150px; }
+    #auth-status .user-avatar-icon { font-size: 1.3em; margin-right: 5px; }
+    #auth-status a.logout-link { margin-left: 5px; }
+    #messages { padding: 0; } /* Remove padding */
+    .message { padding: 12px 5%; }
+    .message-icon { width: 28px; height: 28px; font-size: 1em; margin-right: 10px;}
+    #initial-placeholder { padding: 20px; } /* Adjust placeholder padding */
+    #initial-placeholder h2 { font-size: 1.3em; }
+    #initial-placeholder .creators { font-size: 0.8em; margin-bottom: 20px; }
+    .example-prompts { margin-bottom: 15px; }
+    .prompt-button { padding: 6px 12px; font-size: 0.85em; margin: 3px; }
+    #input-area { padding: 15px 10px 10px 10px; }
+    .input-wrapper { max-width: none; border-radius: 10px; padding: 8px 10px; padding-right: 45px;}
+    #userInput { font-size: 0.95em; line-height: 1.5; }
+    #sendButton { width: 30px; height: 30px; right: 8px; bottom: 8px; border-radius: 5px; }
+    .footer-notice { font-size: 0.7em; padding-top: 8px; }
+}
