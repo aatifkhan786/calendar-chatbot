@@ -20,7 +20,8 @@ from google_auth_oauthlib.flow import Flow
 from google.auth.transport.requests import Request as GoogleAuthRequest
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
-from google.api_core import exceptions as google_exceptions # For refresh errors etc.
+from google.api_core import exceptions as google_exceptions # For generic API errors etc.
+from google.auth import exceptions as google_auth_exceptions # Import for auth-specific exceptions like RefreshError (FIXED)
 
 # --- Google Generative AI (Gemini) ---
 import google.generativeai as genai
@@ -177,7 +178,7 @@ def credentials_to_dict(credentials):
         'expiry': expiry_iso # Store ISO string or None
     }
 
-# --- REVISED Credential Retrieval and Refresh Logic (Unchanged from your provided code) ---
+# --- REVISED Credential Retrieval and Refresh Logic (Corrected Exception Handling) ---
 def get_credentials_from_session():
     """
     Retrieves credentials dictionary, performs manual expiry check using stored
@@ -185,7 +186,6 @@ def get_credentials_from_session():
     and returns a usable Credentials object *without* passing expiry to its constructor.
     Returns None if authentication is required or refresh fails irrecoverably.
     """
-    # (Same as your revised function)
     logging.debug("Attempting to get credentials from session and potentially refresh.")
     credentials_dict = session.get('credentials')
     if not credentials_dict or not credentials_dict.get('token'):
@@ -253,7 +253,9 @@ def get_credentials_from_session():
             logging.debug(f"Updated session with refreshed credentials (new expiry: {credentials_dict.get('expiry')})")
             needs_refresh = False # Mark as refreshed
 
-        except google_exceptions.RefreshError as refresh_error:
+        # ***** THIS IS THE CORRECTED LINE *****
+        except google_auth_exceptions.RefreshError as refresh_error:
+             # Use google_auth_exceptions here
              logging.error(f"Failed to refresh token proactively (RefreshError): {refresh_error}. Grant might be revoked or refresh token invalid.")
              session.clear() # Clear everything on RefreshError
              logging.info("Cleared session due to RefreshError during proactive refresh.")
@@ -693,7 +695,7 @@ def oauth2callback():
         else:
              logging.info("Refresh token received and stored.") # It will be in the credentials_dict
 
-    except google_exceptions.OAuth2Error as e:
+    except google_auth_exceptions.OAuth2Error as e: # Use specific auth exception type
          # Catch specific OAuth library errors during token exchange
          logging.error(f"OAuth2Error fetching token: {e}", exc_info=True)
          msg = "Error exchanging authorization code for tokens. "
